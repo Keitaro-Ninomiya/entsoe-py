@@ -229,7 +229,7 @@ class EntsoeRawClient:
 
     def query_load_forecast(
             self, country_code: Union[Area, str], start: pd.Timestamp,
-            end: pd.Timestamp, process_type: str = 'A31') -> str:
+            end: pd.Timestamp, process_type: str = 'A33') -> str:
         """
         Parameters
         ----------
@@ -1096,7 +1096,7 @@ class EntsoePandasClient(EntsoeRawClient):
     @year_limited
     def query_load_forecast(
             self, country_code: Union[Area, str], start: pd.Timestamp,
-            end: pd.Timestamp, process_type: str = 'A01') -> pd.DataFrame:
+            end: pd.Timestamp, process_type: str = 'A33') -> pd.DataFrame:
         """
         Parameters
         ----------
