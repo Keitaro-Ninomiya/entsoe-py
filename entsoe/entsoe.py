@@ -251,8 +251,7 @@ class EntsoeRawClient:
         }
         response = self._base_request(params=params, start=start, end=end)
         return response.text
-    
-        def query_load_forecast_year(
+    def query_load_forecast_year(
             self, country_code: Union[Area, str], start: pd.Timestamp,
             end: pd.Timestamp, process_type: str = 'A01') -> str:
         """
