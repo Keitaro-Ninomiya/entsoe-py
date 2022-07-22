@@ -251,6 +251,31 @@ class EntsoeRawClient:
         }
         response = self._base_request(params=params, start=start, end=end)
         return response.text
+    
+        def query_load_forecast_year(
+            self, country_code: Union[Area, str], start: pd.Timestamp,
+            end: pd.Timestamp, process_type: str = 'A01') -> str:
+        """
+        Parameters
+        ----------
+        country_code : Area|str
+        start : pd.Timestamp
+        end : pd.Timestamp
+        process_type : str
+
+        Returns
+        -------
+        str
+        """
+        area = lookup_area(country_code)
+        params = {
+            'documentType': 'A59',
+            'processType': process_type,
+            'outBiddingZone_Domain': area.code,
+            # 'out_Domain': domain
+        }
+        response = self._base_request(params=params, start=start, end=end)
+        return response.text
 
     def query_generation_forecast(
             self, country_code: Union[Area, str], start: pd.Timestamp,
@@ -1117,6 +1142,32 @@ class EntsoePandasClient(EntsoeRawClient):
         df = df.tz_convert(area.tz)
         df = df.truncate(before=start, after=end)
         return df
+    
+    @year_limited
+    def query_load_forecast_year(
+            self, country_code: Union[Area, str], start: pd.Timestamp,
+            end: pd.Timestamp, process_type: str = 'A01') -> pd.DataFrame:
+        """
+        Parameters
+        ----------
+        country_code : Area|str
+        start : pd.Timestamp
+        end : pd.Timestamp
+        process_type : str
+
+        Returns
+        -------
+        pd.DataFrame
+        """
+        area = lookup_area(country_code)
+        text = super(EntsoePandasClient, self).query_load_forecast_year(
+            country_code=area, start=start, end=end, process_type=process_type)
+
+        df = parse_loads(text, process_type=process_type)
+        df = df.tz_convert(area.tz)
+        df = df.truncate(before=start, after=end)
+        return df
+    
 
     def query_load_and_forecast(
             self, country_code: Union[Area, str], start: pd.Timestamp,
